@@ -1,4 +1,4 @@
-package com.isaveTemporal.useCaseOne;
+package com.isaveTemporal.useCase;
 
 import io.temporal.activity.Activity;
 import io.temporal.activity.ActivityInterface;

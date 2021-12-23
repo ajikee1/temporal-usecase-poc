@@ -1,4 +1,4 @@
-package com.isaveTemporal.useCaseOne;
+package com.isaveTemporal.useCase;
 
 import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.client.WorkflowClient;
