@@ -22,8 +22,7 @@ import java.util.List;
         2. activity 2 runtime: 2 sec
         3. activity 3 runtime: 5 sec
         4. activity 4 runtime: 10 sec
-    Worker waits for all activities to return before it completes.
-
+    Workflow waits for all activities to return before it completes.
 */
 
 public class UseCaseTwo {
@@ -43,7 +42,7 @@ public class UseCaseTwo {
 
         @Override
         public Boolean initiateWorkFlow() {
-            System.out.println("Printing this from workflow before all parallel activities have completed");
+            System.out.println("Printing this from workflow before all parallel activities have started");
 
             /* Parallel Activity Execution */
             List<Promise<Boolean>> promiseList = new ArrayList<>();
