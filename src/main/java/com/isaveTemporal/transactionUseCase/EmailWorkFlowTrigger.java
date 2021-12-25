@@ -21,8 +21,8 @@ public class EmailWorkFlowTrigger {
         WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).build();
         EmailWorkFlow workflow = client.newWorkflowStub(EmailWorkFlow.class, options);
 
-        String userName = "ajithkeerikkattil@gmail.com";
-        String password = "Pulimood3";
+        String userName = "";
+        String password = "";
         int num = 5;
 
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow, userName, password, num);
