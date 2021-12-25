@@ -7,6 +7,6 @@ import io.temporal.workflow.WorkflowMethod;
 public interface EmailWorkFlow {
 
     @WorkflowMethod
-    public void initiateWorkFlow();
+    public void initiateWorkFlow(String userName, String password, int num);
 
 }
