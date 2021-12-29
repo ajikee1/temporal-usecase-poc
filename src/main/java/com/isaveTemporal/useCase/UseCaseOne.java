@@ -4,6 +4,7 @@ import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
+import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import io.temporal.workflow.SignalMethod;
@@ -110,8 +111,11 @@ public class UseCaseOne {
 
     public static void main(String[] args) {
 
+        /* Point to remote host */
+        WorkflowServiceStubsOptions wfOptions = WorkflowServiceStubsOptions.newBuilder().setTarget("XX.XX.XX.XX:7233").build();
+
         /* Worker code */
-        WorkflowServiceStubs service = WorkflowServiceStubs.newInstance();
+        WorkflowServiceStubs service = WorkflowServiceStubs.newInstance(wfOptions);
         WorkflowClient client = WorkflowClient.newInstance(service);
         WorkerFactory factory = WorkerFactory.newInstance(client);
         Worker worker = factory.newWorker(TASK_QUEUE);
@@ -127,7 +131,7 @@ public class UseCaseOne {
         /* Asynchronously initiate the parent workflow */
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow);
 
-        workflow.signalChildWorkFlow(1);
+        workflow.signalChildWorkFlow(2);
     }
 
 }

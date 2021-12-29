@@ -4,6 +4,7 @@ import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
+import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 
 /*
     Demo the ability of temporal to resume execution without restart on recovery
@@ -26,14 +27,17 @@ public class EmailWorkFlowTrigger {
 
     public static void main(String[] args) {
 
-        WorkflowServiceStubs service = WorkflowServiceStubs.newInstance();
+        /* Point to remote host */
+        WorkflowServiceStubsOptions wfOptions = WorkflowServiceStubsOptions.newBuilder().setTarget("XX.XX.XX.XX:7233").build();
+
+        WorkflowServiceStubs service = WorkflowServiceStubs.newInstance(wfOptions);
         WorkflowClient client = WorkflowClient.newInstance(service);
 
         WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).build();
         EmailWorkFlow workflow = client.newWorkflowStub(EmailWorkFlow.class, options);
 
-        String userName = "";
-        String password = "";
+        String userName = "ajithkeerikkattil@gmail.com";
+        String password = "Pulimood3";
         int num = 5;
 
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow, userName, password, num);
