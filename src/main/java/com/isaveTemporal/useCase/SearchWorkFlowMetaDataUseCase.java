@@ -25,6 +25,10 @@ import java.util.Random;
 
 
 /*
+    Use Case: Demonstrates the ability to pass in custom Workflow ID and query temporal to
+    get the workflow execution details like execution status.
+
+
     A Workflow is uniquely identified by its Namespace, Workflow Id, and Run Id.
 
     Workflow ID: Custom Workflow Id to a Workflow. Example: Customer ID, Order ID etc.
@@ -42,7 +46,7 @@ import java.util.Random;
 
  */
 
-public class SearchWorkFlow {
+public class SearchWorkFlowMetaDataUseCase {
 
     private static String TASK_QUEUE = "TASK_QUEUE";
 
@@ -115,10 +119,7 @@ public class SearchWorkFlow {
         WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
         searchWorkflow workflow = client.newWorkflowStub(searchWorkflow.class, options);
 
-        /*
-            Trigger the workflow async but wait for it to complete
-            In this case, since the workflow is async, the below code will make the workflow to complete
-         */
+        /* Trigger the workflow async but wait for it to complete. In this case, since the workflow is async, the below code will make the workflow to complete */
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow);
         WorkflowStub untyped = WorkflowStub.fromTyped(workflow);
         Boolean workFLowStatus = untyped.getResult(Boolean.class);
