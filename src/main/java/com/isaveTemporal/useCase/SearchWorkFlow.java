@@ -103,13 +103,17 @@ public class SearchWorkFlow {
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow);
         WorkflowStub untyped = WorkflowStub.fromTyped(workflow);
         Boolean workFLowStatus = untyped.getResult(Boolean.class);
-        System.out.println("    WORKFLOW STATUS: " + workFLowStatus);
+        System.out.println("    WORKFLOW RESPONSE: " + workFLowStatus);
 
         /* Get the Workflow ID and Run ID */
         String workFlowId = we.getWorkflowId();
         String runId = we.getRunId();
         System.out.println("    WORKFLOW ID: " + workFlowId + " RUN ID: " + runId);
 
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
 
         /* Search for workFlows by the workFlowId and get meta-data */
         String query = "WorkflowId='" + workFlowId + "'";
