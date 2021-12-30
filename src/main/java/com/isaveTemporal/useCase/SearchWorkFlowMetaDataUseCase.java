@@ -153,6 +153,18 @@ public class SearchWorkFlowMetaDataUseCase {
             String workFlowType = workFlowExecution.getType().getName();
             String workFlowStatus = workFlowExecution.getStatus().toString();
             System.out.println("    WORKFLOW ID: " + workFlowId + " WORKFLOW STATUS: " + workFlowStatus);
+
+            if (!workFLowStatus.equals("WORKFLOW_EXECUTION_STATUS_COMPLETED")) {
+                searchWorkflow workflowDuplicate = client.newWorkflowStub(searchWorkflow.class, options);
+
+                /***** Trigger the workflow with the same workflow ID again *****/
+                // Since the WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY, another run with the same workflow ID will only trigger if it failed before
+                WorkflowExecution weDuplicate = WorkflowClient.start(workflowDuplicate::initiateWorkFlow);
+                WorkflowStub untypedDuplicate = WorkflowStub.fromTyped(workflowDuplicate);
+                Boolean workFLowStatusDuplicate = untyped.getResult(Boolean.class);
+                /***** Trigger the workflow with the same workflow ID again *****/
+            }
+
         }
         /******* Search for workFlows by the workFlowId and get meta-data *********/
 
