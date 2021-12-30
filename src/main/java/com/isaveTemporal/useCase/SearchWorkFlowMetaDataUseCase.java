@@ -62,16 +62,8 @@ public class SearchWorkFlowMetaDataUseCase {
 
         @Override
         public Boolean initiateWorkFlow() {
-            /* Use side-effect
-                *  Workflow code that includes arbitrary side effects (for example getting a random number or generating a random UUID, etc), can cause unpredictable results during replay.
-                *  Being able to add some non-deterministic code inside your Workflow is in some cases important, and you can do that using Workflow.sideEffect.
-
-                String randomString = Workflow.sideEffect(String.class, () -> generateRandom());
-            */
-
             Promise<Boolean> p = Async.function(activities::activityOne);
             Boolean response = p.get();
-
             return true;
         }
     }
