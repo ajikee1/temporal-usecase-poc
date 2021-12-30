@@ -6,6 +6,7 @@ import io.temporal.activity.ActivityOptions;
 import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.api.common.v1.WorkflowType;
 import io.temporal.api.enums.v1.WorkflowExecutionStatus;
+import io.temporal.api.enums.v1.WorkflowIdReusePolicy;
 import io.temporal.api.workflow.v1.WorkflowExecutionInfo;
 import io.temporal.api.workflowservice.v1.ListWorkflowExecutionsRequest;
 import io.temporal.api.workflowservice.v1.ListWorkflowExecutionsResponse;
@@ -22,6 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+/*
+    A Workflow is uniquely identified by its Namespace, Workflow Id, and Run Id.
+
+    Workflow ID: Custom Workflow Id to a Workflow. Example: Customer ID, Order ID etc.
+        - WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId({WORKFLOW_ID}).build();
+
+    Cannot re-use workflow ID (except based on reuse policy):
+        - Set re-use policy: WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
+
+    1. Allow duplicate failed only policy: Allow a workflow with duplicate ID to run if the prev workflow with that ID failed.
+        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY)
+    2. Allow duplicate policy: Default
+        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE)
+    3. Reject duplicate policy:
+        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
+
+ */
 
 public class SearchWorkFlow {
 
@@ -45,7 +64,7 @@ public class SearchWorkFlow {
                 *  Being able to add some non-deterministic code inside your Workflow is in some cases important, and you can do that using Workflow.sideEffect.
 
                 String randomString = Workflow.sideEffect(String.class, () -> generateRandom());
-            * */
+            */
 
             Promise<Boolean> p = Async.function(activities::activityOne);
             Boolean response = p.get();
@@ -93,7 +112,7 @@ public class SearchWorkFlow {
         factory.start();
 
         /* Set Workflow ID to the randomString */
-        WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).build();
+        WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
         searchWorkflow workflow = client.newWorkflowStub(searchWorkflow.class, options);
 
         /*
@@ -111,7 +130,7 @@ public class SearchWorkFlow {
         System.out.println("    WORKFLOW ID: " + workFlowId + " RUN ID: " + runId);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         } catch (Exception e) {
         }
 
