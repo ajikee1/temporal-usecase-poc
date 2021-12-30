@@ -24,27 +24,26 @@ import java.util.List;
 import java.util.Random;
 
 
-/*
-    Use Case: Demonstrates the ability to pass in custom Workflow ID and query temporal to
-    get the workflow execution details like execution status.
+/****
+ Use Case: Demonstrates the ability to pass in custom Workflow ID and query temporal by this Workflow ID to
+ get the workflow execution details like execution status.
 
 
-    A Workflow is uniquely identified by its Namespace, Workflow Id, and Run Id.
+ A Workflow is uniquely identified by its Namespace, Workflow Id, and Run Id.
 
-    Workflow ID: Custom Workflow Id to a Workflow. Example: Customer ID, Order ID etc.
-        - WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId({WORKFLOW_ID}).build();
+ Workflow ID: Custom Workflow Id to a Workflow. Example: Customer ID, Order ID etc.
+ - WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId({WORKFLOW_ID}).build();
 
-    Cannot re-use workflow ID (except based on reuse policy):
-        - Set re-use policy: WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
+ Cannot re-use workflow ID (except based on reuse policy):
+ - Set re-use policy: WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
 
-    1. Allow duplicate failed only policy: Allow a workflow with duplicate ID to run if the prev workflow with that ID failed.
-        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY)
-    2. Allow duplicate policy: Default
-        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE)
-    3. Reject duplicate policy:
-        setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
-
- */
+ 1. Allow duplicate failed only policy: Allow a workflow with duplicate ID to run if the prev workflow with that ID failed.
+ setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY)
+ 2. Allow duplicate policy: Default
+ setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE)
+ 3. Reject duplicate policy:
+ setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
+ ****/
 
 public class SearchWorkFlowMetaDataUseCase {
 
@@ -106,7 +105,7 @@ public class SearchWorkFlowMetaDataUseCase {
         /* returns a string to be used as the WORKFLOW ID */
         String randomString = generateRandom();
 
-        /* Worker code */
+        /***** Worker code *****/
         WorkflowServiceStubs service = WorkflowServiceStubs.newInstance();
         WorkflowClient client = WorkflowClient.newInstance(service);
         WorkerFactory factory = WorkerFactory.newInstance(client);
@@ -114,28 +113,37 @@ public class SearchWorkFlowMetaDataUseCase {
         worker.registerWorkflowImplementationTypes(searchWorkflowImp.class);
         worker.registerActivitiesImplementations(new testActivityImp());
         factory.start();
+        /***** Worker code *****/
 
-        /* Set Workflow ID to the randomString */
+
+        /****** Set Workflow ID to the randomString ********/
         WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(TASK_QUEUE).setWorkflowId(randomString).setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY).build();
+        /****** Set Workflow ID to the randomString ********/
+
+
         searchWorkflow workflow = client.newWorkflowStub(searchWorkflow.class, options);
 
-        /* Trigger the workflow async but wait for it to complete. In this case, since the workflow is async, the below code will make the workflow to complete */
+
+        /***** Trigger the workflow async but wait for it to complete. Code will wait for workflow to complete *****/
         WorkflowExecution we = WorkflowClient.start(workflow::initiateWorkFlow);
         WorkflowStub untyped = WorkflowStub.fromTyped(workflow);
         Boolean workFLowStatus = untyped.getResult(Boolean.class);
-        System.out.println("    WORKFLOW RESPONSE: " + workFLowStatus);
+        /***** Trigger the workflow async but wait for it to complete. Code will wait for workflow to complete *****/
 
-        /* Get the Workflow ID and Run ID */
+
+        /******* Get the Workflow ID and Run ID ********/
         String workFlowId = we.getWorkflowId();
         String runId = we.getRunId();
         System.out.println("    WORKFLOW ID: " + workFlowId + " RUN ID: " + runId);
+        /******* Get the Workflow ID and Run ID ********/
 
         try {
             Thread.sleep(5000);
         } catch (Exception e) {
         }
 
-        /* Search for workFlows by the workFlowId and get meta-data */
+
+        /******* Search for workFlows by the workFlowId and get meta-data *********/
         String query = "WorkflowId='" + workFlowId + "'";
         ListWorkflowExecutionsRequest wfeRequest = ListWorkflowExecutionsRequest.newBuilder().setQuery(query).setNamespace("default").build();
         ListWorkflowExecutionsResponse wfeResponse = service.blockingStub().listWorkflowExecutions(wfeRequest);
@@ -146,6 +154,8 @@ public class SearchWorkFlowMetaDataUseCase {
             String workFlowStatus = workFlowExecution.getStatus().toString();
             System.out.println("    WORKFLOW ID: " + workFlowId + " WORKFLOW STATUS: " + workFlowStatus);
         }
+        /******* Search for workFlows by the workFlowId and get meta-data *********/
+
 
     }
 
