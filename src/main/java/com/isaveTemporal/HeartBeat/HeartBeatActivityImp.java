@@ -7,7 +7,10 @@ public class HeartBeatActivityImp implements HeartBeatActivity {
 
     @Override
     public boolean heartBeatActivity() {
+
         int start = 0;
+
+        /**** Getting the heartbeats 'last heartbeat details' ******/
         Optional<Integer> lastHeartBeat = Activity.getExecutionContext().getHeartbeatDetails(Integer.class);
 
         if (lastHeartBeat.isPresent()) {
@@ -15,6 +18,8 @@ public class HeartBeatActivityImp implements HeartBeatActivity {
             System.out.println("Using HeartBeat to skip failure point on retry i.e. skip i = " + lastHeartBeat.get() + " on re-run");
             start = lastHeartBeat.get() + 1;
         }
+        /**** Getting the heartbeats 'last heartbeat details' ******/
+
 
         for (int i = start; i < 10; i++) {
             try {
