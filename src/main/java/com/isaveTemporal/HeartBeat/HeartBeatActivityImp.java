@@ -13,7 +13,7 @@ public class HeartBeatActivityImp implements HeartBeatActivity {
         if (lastHeartBeat.isPresent()) {
             System.out.println("Failure point: " + lastHeartBeat.get());
             System.out.println("Using HeartBeat to skip failure point on retry i.e. skip i = " + lastHeartBeat.get() + " on re-run");
-            start = 4;
+            start = lastHeartBeat.get() + 1;
         }
 
         for (int i = start; i < 10; i++) {

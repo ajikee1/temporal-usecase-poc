@@ -18,7 +18,6 @@ Use case:
     - On retry, the value of 'Activity.getExecutionContext().getHeartbeatDetails()' (3 in this case) is used to set the loop starting point to '4'
       and continue with 'i' 4 to 10.
     - Thereby, using heartbeat to skip the failure point on activity re-try.
-
  */
 
 public class HeartBeatWorkFlowTrigger {
